@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_user_data:/var/lib/postgresql/dados
 
-postgres-ticket:
+  postgres-ticket:
     image: postgres:15-alpine
     environment:
       POSTGRES_DB: ticket_db
@@ -21,7 +21,7 @@ postgres-ticket:
     volumes:
       - postgres_ticket_data:/var/lib/postgresql/dados
 
-rabbitmq:
+  rabbitmq:
     image: rabbitmq:4-management-alpine
     environment:
       RABBITMQ_DEFAULT_USER: guest
