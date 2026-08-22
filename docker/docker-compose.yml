@@ -1,3 +1,7 @@
+volumes:
+  postgres_user_data:
+  postgres_ticket_data:
+
 services:
   postgres-user:
     image: postgres:15-alpine
