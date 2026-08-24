@@ -1,6 +1,6 @@
 package br.solutis.ticket.enums.category;
 
-public enum TicketCategory {
+public enum Category {
     HARDWARE,
     SOFTWARE,
     NETWORK
