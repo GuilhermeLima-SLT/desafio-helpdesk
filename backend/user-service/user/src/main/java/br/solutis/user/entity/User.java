@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -31,6 +32,18 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(nullable = false)
+    private Boolean active;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (active == null) active = true;
+        createdAt = LocalDateTime.now();
+    }
 }
 
-// Adicionando a entitidade da tabela JPA User com os campos: id, nome, email e cargo (ADMIN, TECNICO OU CLIENTE)
+// Adicionando a entitidade da tabela JPA User com os campos: id, nome, email, cargo (ADMIN, TECNICO OU CLIENTE), estado (Ativo ou Inativo) e data de criação
