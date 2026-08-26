@@ -10,8 +10,6 @@ import java.util.UUID;
 
 public record UserRequest(
 
-        UUID id,
-
         @NotBlank
         String name,
 
