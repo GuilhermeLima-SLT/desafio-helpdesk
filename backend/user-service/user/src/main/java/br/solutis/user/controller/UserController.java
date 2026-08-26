@@ -24,10 +24,16 @@ public class UserController {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
-    @Operation(summary = "Listar todos os usuários")
-    @GetMapping
+    @Operation(summary = "Listar todos os usuários (Incluindo inativos)")
+    @GetMapping("/all")
     public ResponseEntity<List<User>> listUsers() {
         return ResponseEntity.ok(userRepository.findAll());
+    }
+
+    @Operation(summary = "Listar todos os usuários ativos")
+    @GetMapping
+    public ResponseEntity<List<User>> listAllActive() {
+        return ResponseEntity.ok(userRepository.findByActiveTrue());
     }
 
     @Operation(summary = "Buscar usuário por ID")
@@ -53,7 +59,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Inativar usuário")
+    @Operation(summary = "Inativar usuário (Exclusão lógica)")
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<User> deactivateUser(@PathVariable UUID id) {
 
@@ -61,6 +67,19 @@ public class UserController {
                 .map(user -> {
                     user.setActive(false);
                     return ResponseEntity.ok(userRepository.save(user));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Excluir (inativar) usuário")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable UUID id) {
+
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setActive(false);
+                    userRepository.save(user);
+                    return ResponseEntity.noContent().build(); // 204
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
