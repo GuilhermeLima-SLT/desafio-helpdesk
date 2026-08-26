@@ -65,4 +65,63 @@ public class TicketController {
     public ResponseEntity<List<Ticket>> getByCustomerId(@PathVariable UUID customerId) {
         return ResponseEntity.ok(ticketRepository.findByCustomerId(customerId));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Ticket> updateTicket(
+            @PathVariable UUID id,
+            @RequestBody Ticket updated
+    ) {
+
+        return ticketRepository.findById(id)
+                .map(ticket -> {
+                    ticket.setDescription(updated.getDescription());
+                    ticket.setPriority(updated.getPriority());
+                    ticket.setCategory(updated.getCategory());
+                    ticket.setStatus(updated.getStatus());
+
+                    Ticket saved = ticketRepository.save(ticket);
+
+//                    rabbitTemplate.convertAndSend("ticket.updated", saved);
+
+                    return ResponseEntity.ok(saved);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/assign")
+    public ResponseEntity<Ticket> assignTechnician(
+            @PathVariable UUID id,
+            @RequestParam UUID technicianId
+    ) {
+
+        return ticketRepository.findById(id)
+                .map(ticket -> {
+                    ticket.setTechnicianId(technicianId);
+                    ticket.setStatus(Status.valueOf("IN_PROGRESS"));
+
+                    Ticket saved = ticketRepository.save(ticket);
+
+//                    rabbitTemplate.convertAndSend("ticket.assigned", saved);
+
+                    return ResponseEntity.ok(saved);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}/close")
+    public ResponseEntity<Ticket> closeTicket(@PathVariable UUID id) {
+
+        return ticketRepository.findById(id)
+                .map(ticket -> {
+                    ticket.setStatus(Status.valueOf("CLOSED"));
+
+                    Ticket saved = ticketRepository.save(ticket);
+
+//                    rabbitTemplate.convertAndSend("ticket.closed", saved);
+
+                    return ResponseEntity.ok(saved);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }
