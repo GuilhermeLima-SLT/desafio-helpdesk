@@ -61,7 +61,7 @@ public class Ticket {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.status = Status.valueOf("OPEN");
     }
 
     @PreUpdate
