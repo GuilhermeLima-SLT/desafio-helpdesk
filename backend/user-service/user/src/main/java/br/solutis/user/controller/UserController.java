@@ -3,12 +3,13 @@ package br.solutis.user.controller;
 import br.solutis.user.entity.User;
 import br.solutis.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.persistence.Id;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -31,7 +32,36 @@ public class UserController {
 
     @Operation(summary = "Buscar usuário por ID")
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<Optional<User>> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userRepository.findById(id));
+    }
+
+    @Operation(summary = "Atualizar usuário por ID")
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(
+            @PathVariable UUID id,
+            @RequestBody @Valid User updatedUser) {
+
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setName(updatedUser.getName());
+                    user.setEmail(updatedUser.getEmail());
+                    user.setRole(updatedUser.getRole());
+
+                    return ResponseEntity.ok(userRepository.save(user));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Inativar usuário")
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<User> deactivateUser(@PathVariable UUID id) {
+
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setActive(false);
+                    return ResponseEntity.ok(userRepository.save(user));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

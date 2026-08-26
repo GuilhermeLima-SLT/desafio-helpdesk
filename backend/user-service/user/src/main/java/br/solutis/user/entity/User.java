@@ -39,6 +39,7 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    // LocalDateTime faz pre persistencia do campo no momento que é chamado, ou seja, criação do usuario
     @PrePersist
     public void prePersist() {
         if (active == null) active = true;
