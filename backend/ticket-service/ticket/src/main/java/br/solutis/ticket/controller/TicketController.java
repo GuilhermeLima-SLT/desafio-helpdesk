@@ -57,8 +57,8 @@ public class TicketController {
 
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Ticket>> getByStatus(@PathVariable String status) {
-        return ResponseEntity.ok(ticketRepository.findByStatus(Status.valueOf(status)));
+    public ResponseEntity<List<Ticket>> getByStatus(@Valid @PathVariable Status status) {
+        return ResponseEntity.ok(ticketRepository.findByStatus(status));
     }
 
 // Meu metodo antigo usando conexão direta com entity
@@ -70,7 +70,7 @@ public class TicketController {
 //    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TicketResponse> getById(@PathVariable UUID id) {
+    public ResponseEntity<TicketResponse> getById(@Valid @PathVariable UUID id) {
 
         return ticketRepository.findById(id)
                 .map(ticket -> ResponseEntity.ok(TicketMapper.toResponse(ticket)))
@@ -78,17 +78,17 @@ public class TicketController {
     }
 
     @GetMapping("/priority/{priority}")
-    public ResponseEntity<List<Ticket>> getByPriority(@PathVariable String priority) {
-        return ResponseEntity.ok(ticketRepository.findByPriority(TicketPriority.valueOf(priority)));
+    public ResponseEntity<List<Ticket>> getByPriority(@Valid @PathVariable TicketPriority priority) {
+        return ResponseEntity.ok(ticketRepository.findByPriority(priority));
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Ticket>> getByCategory(@PathVariable String category) {
-        return ResponseEntity.ok(ticketRepository.findByCategory(Category.valueOf(category)));
+    public ResponseEntity<List<Ticket>> getByCategory(@Valid @PathVariable Category category) {
+        return ResponseEntity.ok(ticketRepository.findByCategory(category));
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<Ticket>> getByCustomerId(@PathVariable UUID customerId) {
+    public ResponseEntity<List<Ticket>> getByCustomerId(@Valid @PathVariable UUID customerId) {
         return ResponseEntity.ok(ticketRepository.findByCustomerId(customerId));
     }
 
@@ -137,7 +137,7 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}/close")
-    public ResponseEntity<TicketResponse> encerraTicket(@PathVariable UUID id) {
+    public ResponseEntity<TicketResponse> encerraTicket(@Valid @PathVariable UUID id) {
 
         return ticketRepository.findById(id)
                 .map(ticket -> {
@@ -153,9 +153,8 @@ public class TicketController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Novo endpoint -> Deletar ticket do banco de dados de tickets
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTicket(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteTicket(@Valid @PathVariable UUID id) {
 
         if (!ticketRepository.existsById(id)) {
             return ResponseEntity.notFound().build();

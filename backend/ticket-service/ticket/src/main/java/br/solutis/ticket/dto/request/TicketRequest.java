@@ -23,7 +23,7 @@ public record TicketRequest(
         @Enumerated(EnumType.STRING)
         TicketPriority priority,
 
-        @NotNull(message = " !! Title é um campo obrigatório !! ")
+        @NotNull(message = " !! Categoria é um campo obrigatório !! ")
         @Enumerated(EnumType.STRING)
         Category category,
 
