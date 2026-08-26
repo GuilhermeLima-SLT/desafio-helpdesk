@@ -9,6 +9,7 @@ import br.solutis.ticket.enums.priority.TicketPriority;
 import br.solutis.ticket.enums.status.Status;
 import br.solutis.ticket.mapper.TicketMapper;
 import br.solutis.ticket.repository.TicketRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ public class TicketController {
     @Autowired
     private TicketRepository ticketRepository;
 
+    @Operation(summary = "Criar ticket com título, descrição, categoria e prioridade")
     @PostMapping
     public ResponseEntity<TicketResponse> criaTicket(@Valid @RequestBody TicketRequest request) {
 
@@ -38,15 +40,16 @@ public class TicketController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(TicketMapper.toResponse(saved));
-}
+    }
 
+    @Operation(summary = "Listar todos tickets")
     @GetMapping // Requisição HTTP GET para listar todos os tickets com controle de visibilidade e filtragem (DTO CreateTicketRequest)
     public ResponseEntity<List<TicketRequest>> findAll(){
         List<TicketRequest> list = ticketRepository.findAll().stream().map(TicketRequest::new).toList();
         return ResponseEntity.ok(list);
     }
 
-
+    @Operation(summary = "Filtro de tickets por status especifico")
     @GetMapping("/status/{status}")
     public ResponseEntity<List<TicketResponse>> getByStatus(@Valid @PathVariable Status status) {
         List<TicketResponse> response = ticketRepository.findByStatus(status)
@@ -56,8 +59,7 @@ public class TicketController {
         return ResponseEntity.ok(response);
     }
 
-
-    // Implementado com conexão gerenciada por DTO e Mapper para retorno mais adequado às requisições...
+    @Operation(summary = "Listar ticket especifico pelo ID")
     @GetMapping("/{id}")
     public ResponseEntity<TicketResponse> getById(@Valid @PathVariable UUID id) {
 
@@ -67,8 +69,7 @@ public class TicketController {
     }
 
 
-    //Metodos agora adequados com conexões feitas via DTO e Mapper
-    //Usando Stream, DTO
+    @Operation(summary = "Filtro de tickets por prioridade especifica")
     @GetMapping("/priority/{priority}")
     public ResponseEntity<List<TicketResponse>> getByPriority(@Valid @PathVariable TicketPriority priority) {
         List<TicketResponse> response = ticketRepository.findByPriority(priority)
@@ -78,7 +79,7 @@ public class TicketController {
         return ResponseEntity.ok(response);
     }
 
-
+    @Operation(summary = "Filtro de tickets por categoria especifica")
     @GetMapping("/category/{category}")
     public ResponseEntity<List<TicketResponse>> getByCategory(@Valid @PathVariable Category category) {
         List<TicketResponse> response = ticketRepository.findByCategory(category)
@@ -88,8 +89,7 @@ public class TicketController {
         return ResponseEntity.ok(response);
     }
 
-
-    // Metodo ainda com conexão direta na Entity
+    @Operation(summary = "Consultar chamados de determinado cliente")
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<List<TicketResponse>> getByCustomerId(@Valid @PathVariable UUID customerId) {
         List<TicketResponse> response = ticketRepository.findByCustomerId(customerId)
@@ -99,6 +99,7 @@ public class TicketController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Alterar prioridade, categoria, descrição e status de um ticket pelo ID")
     @PutMapping("/{id}")
     public ResponseEntity<TicketResponse> atualizaTicket(
             @Valid
@@ -111,6 +112,7 @@ public class TicketController {
                     ticket.setDescription(request.description());
                     ticket.setPriority(request.priority());
                     ticket.setCategory(request.category());
+                    ticket.setStatus(request.status());
 
                     Ticket saved = ticketRepository.save(ticket);
 
@@ -121,7 +123,7 @@ public class TicketController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
+    @Operation(summary = "Atribuir técnico")
     @PutMapping("/{id}/assign")
     public ResponseEntity<TicketResponse> atribuirTecnico(
             @Valid
@@ -145,6 +147,7 @@ public class TicketController {
     }
 
 
+    @Operation(summary = "Encerrar ticket")
     @DeleteMapping("/{id}/close")
     public ResponseEntity<TicketResponse> encerraTicket(@Valid @PathVariable UUID id) {
 
@@ -162,7 +165,7 @@ public class TicketController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
+    @Operation(summary = "Deletar ticket")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicket(@Valid @PathVariable UUID id) {
 

@@ -3,6 +3,7 @@ package br.solutis.ticket.dto.request;
 import br.solutis.ticket.entity.Ticket;
 import br.solutis.ticket.enums.category.Category;
 import br.solutis.ticket.enums.priority.TicketPriority;
+import br.solutis.ticket.enums.status.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,6 +24,9 @@ public record TicketRequest(
         @Enumerated(EnumType.STRING)
         TicketPriority priority,
 
+        @Enumerated(EnumType.STRING)
+        Status status,
+
         @NotNull(message = " !! Categoria é um campo obrigatório !! ")
         @Enumerated(EnumType.STRING)
         Category category,
@@ -31,6 +35,6 @@ public record TicketRequest(
         UUID customerId
 ){
         public TicketRequest(Ticket ticket){
-                this(ticket.getTitle(), ticket.getDescription(), ticket.getPriority(),ticket.getCategory(), ticket.getCustomerId());
+                this(ticket.getTitle(), ticket.getDescription(), ticket.getPriority(),ticket.getStatus(),ticket.getCategory(), ticket.getCustomerId());
         }
 }
