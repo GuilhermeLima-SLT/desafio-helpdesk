@@ -1,9 +1,9 @@
 package br.solutis.ticket.dto.request;
 
 import br.solutis.ticket.entity.Ticket;
-import br.solutis.ticket.enums.category.Category;
-import br.solutis.ticket.enums.priority.TicketPriority;
-import br.solutis.ticket.enums.status.Status;
+import br.solutis.ticket.enums.Category;
+import br.solutis.ticket.enums.TicketPriority;
+import br.solutis.ticket.enums.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

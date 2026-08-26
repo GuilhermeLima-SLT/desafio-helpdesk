@@ -1,8 +1,8 @@
 package br.solutis.ticket.dto.response;
 
-import br.solutis.ticket.enums.category.Category;
-import br.solutis.ticket.enums.priority.TicketPriority;
-import br.solutis.ticket.enums.status.Status;
+import br.solutis.ticket.enums.Category;
+import br.solutis.ticket.enums.TicketPriority;
+import br.solutis.ticket.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

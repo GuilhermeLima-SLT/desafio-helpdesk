@@ -1,9 +1,9 @@
 package br.solutis.ticket.repository;
 
 import br.solutis.ticket.entity.Ticket;
-import br.solutis.ticket.enums.category.Category;
-import br.solutis.ticket.enums.status.Status;
-import br.solutis.ticket.enums.priority.TicketPriority;
+import br.solutis.ticket.enums.Category;
+import br.solutis.ticket.enums.Status;
+import br.solutis.ticket.enums.TicketPriority;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

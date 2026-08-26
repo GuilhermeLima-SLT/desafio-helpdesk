@@ -1,4 +1,4 @@
-package br.solutis.ticket.enums.priority;
+package br.solutis.ticket.enums;
 
 public enum TicketPriority {
     LOW,

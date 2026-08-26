@@ -1,4 +1,4 @@
-package br.solutis.ticket.enums.status;
+package br.solutis.ticket.enums;
 
 public enum Status {
     OPEN,
