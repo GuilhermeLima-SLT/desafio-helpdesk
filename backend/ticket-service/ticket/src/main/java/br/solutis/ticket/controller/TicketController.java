@@ -25,15 +25,6 @@ public class TicketController {
     @Autowired
     private TicketRepository ticketRepository;
 
-//    @PostMapping
-//    public ResponseEntity<Ticket> createTicket(@RequestBody @NonNull Ticket ticket) {
-//        ticket.setStatus(Status.valueOf("OPEN"));
-//        ticket.setCreatedAt(LocalDateTime.now());
-//        Ticket saved = ticketRepository.save(ticket);
-//        rabbitTemplate.convertAndSend("ticket.created", saved);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-//    }
-
     @PostMapping
     public ResponseEntity<TicketResponse> criaTicket(@Valid @RequestBody TicketRequest request) {
 
@@ -57,18 +48,16 @@ public class TicketController {
 
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Ticket>> getByStatus(@Valid @PathVariable Status status) {
-        return ResponseEntity.ok(ticketRepository.findByStatus(status));
+    public ResponseEntity<List<TicketResponse>> getByStatus(@Valid @PathVariable Status status) {
+        List<TicketResponse> response = ticketRepository.findByStatus(status)
+                .stream()
+                .map(TicketMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
-// Meu metodo antigo usando conexão direta com entity
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Ticket> getById(@PathVariable @NonNull UUID id) {
-//        return ticketRepository.findById(id)
-//                .map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
 
+    // Implementado com conexão gerenciada por DTO e Mapper para retorno mais adequado às requisições...
     @GetMapping("/{id}")
     public ResponseEntity<TicketResponse> getById(@Valid @PathVariable UUID id) {
 
@@ -77,19 +66,37 @@ public class TicketController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
+    //Metodos agora adequados com conexões feitas via DTO e Mapper
+    //Usando Stream, DTO
     @GetMapping("/priority/{priority}")
-    public ResponseEntity<List<Ticket>> getByPriority(@Valid @PathVariable TicketPriority priority) {
-        return ResponseEntity.ok(ticketRepository.findByPriority(priority));
+    public ResponseEntity<List<TicketResponse>> getByPriority(@Valid @PathVariable TicketPriority priority) {
+        List<TicketResponse> response = ticketRepository.findByPriority(priority)
+                .stream()
+                .map(TicketMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Ticket>> getByCategory(@Valid @PathVariable Category category) {
-        return ResponseEntity.ok(ticketRepository.findByCategory(category));
+    public ResponseEntity<List<TicketResponse>> getByCategory(@Valid @PathVariable Category category) {
+        List<TicketResponse> response = ticketRepository.findByCategory(category)
+                .stream()
+                .map(TicketMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
+
+    // Metodo ainda com conexão direta na Entity
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<Ticket>> getByCustomerId(@Valid @PathVariable UUID customerId) {
-        return ResponseEntity.ok(ticketRepository.findByCustomerId(customerId));
+    public ResponseEntity<List<TicketResponse>> getByCustomerId(@Valid @PathVariable UUID customerId) {
+        List<TicketResponse> response = ticketRepository.findByCustomerId(customerId)
+                .stream()
+                .map(TicketMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
@@ -114,6 +121,7 @@ public class TicketController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
     @PutMapping("/{id}/assign")
     public ResponseEntity<TicketResponse> atribuirTecnico(
             @Valid
@@ -136,6 +144,7 @@ public class TicketController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
     @DeleteMapping("/{id}/close")
     public ResponseEntity<TicketResponse> encerraTicket(@Valid @PathVariable UUID id) {
 
@@ -152,6 +161,7 @@ public class TicketController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicket(@Valid @PathVariable UUID id) {
