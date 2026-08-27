@@ -2,6 +2,7 @@ package br.solutis.user.entity;
 
 import br.solutis.user.role.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,12 +25,15 @@ public class User {
 
     @Column(unique = true, nullable = false)
     @NotBlank
+    @Email
     private String email;
 
     @NotBlank
+    @Column(nullable = false)
     private String name;
 
     @NotNull
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 

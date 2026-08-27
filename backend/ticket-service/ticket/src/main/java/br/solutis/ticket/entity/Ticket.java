@@ -31,7 +31,6 @@ public class Ticket {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -46,6 +45,7 @@ public class Ticket {
     @Column(nullable = false)
     private Category category;
 
+    @NotNull(message = "O ID do cliente é obrigatório")
     @Column(name = "customer_id", nullable = false)
     private UUID customerId;
 
