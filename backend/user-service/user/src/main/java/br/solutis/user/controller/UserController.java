@@ -72,7 +72,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Excluir (inativar) usuário")
+    @Operation(summary = "Inativar usuário (Excluir da base de dados)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
