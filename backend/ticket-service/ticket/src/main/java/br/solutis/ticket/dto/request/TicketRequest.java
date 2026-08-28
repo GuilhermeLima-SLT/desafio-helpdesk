@@ -17,6 +17,7 @@ public record TicketRequest(
         @NotBlank(message = " !! Titulo é um campo obrigatório !! ")
         String title,
 
+        @NotBlank(message = " !! Descricao é um campo obrigatório !! ")
         @Column(columnDefinition = "TEXT")
         String description,
 

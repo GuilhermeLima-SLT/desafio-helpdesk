@@ -58,6 +58,7 @@ public class UserController {
     @Operation(summary = "Atualizar usuário por ID")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(
+            @Valid
             @PathVariable UUID id,
             @RequestBody @Valid UpdateUserRequest request) {
         UserResponse response = userService.updateUser(id, request);
@@ -66,7 +67,7 @@ public class UserController {
 
     @Operation(summary = "Inativar usuário (Exclusão lógica)")
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<UserResponse> deactivateUser(@PathVariable UUID id) {
+    public ResponseEntity<UserResponse> deactivateUser(@Valid @PathVariable UUID id) {
         UserResponse response = userService.deactivateUser(id);
         return ResponseEntity.ok(response);
     }

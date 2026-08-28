@@ -28,6 +28,7 @@ public class Ticket {
     @Column(nullable = false)
     private String title;
 
+    @NotBlank
     @Column(columnDefinition = "TEXT")
     private String description;
 
