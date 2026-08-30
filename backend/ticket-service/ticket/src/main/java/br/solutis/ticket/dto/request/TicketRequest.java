@@ -32,6 +32,7 @@ public record TicketRequest(
         @Enumerated(EnumType.STRING)
         Category category,
 
+        @NotNull(message = " !! Id do solicitante é um campo obrigatório !! ")
         @Column(name = "customer_id", nullable = false)
         UUID customerId
 ){

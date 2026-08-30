@@ -1,5 +1,7 @@
 package br.solutis.ticket.service;
 
+import br.solutis.ticket.amqp.TicketAMQPConfiguration;
+import br.solutis.ticket.dto.event.TicketEvent;
 import br.solutis.ticket.dto.request.AtribuirTecnicoRequest;
 import br.solutis.ticket.dto.request.TicketRequest;
 import br.solutis.ticket.dto.response.TicketResponse;
@@ -9,6 +11,7 @@ import br.solutis.ticket.enums.Status;
 import br.solutis.ticket.enums.TicketPriority;
 import br.solutis.ticket.mapper.TicketMapper;
 import br.solutis.ticket.repository.TicketRepository;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,18 +26,33 @@ public class TicketService {
 
     @Autowired
     private TicketRepository ticketRepository;
+    private RabbitTemplate rabbitTemplate;
 
-    // @Autowired
-    // private RabbitTemplate rabbitTemplate;
+    public TicketService(TicketRepository ticketRepository, RabbitTemplate rabbitTemplate) {
+        this.ticketRepository = ticketRepository;
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @Transactional
     public TicketResponse criaTicket(TicketRequest request) {
         Ticket ticket = TicketMapper.toEntity(request);
-        ticket.setStatus(Status.valueOf("OPEN"));
+        ticket.setStatus(Status.OPEN);
 
         Ticket saved = ticketRepository.save(ticket);
 
-        // rabbitTemplate.convertAndSend("ticket.created", saved);
+        TicketEvent event = new TicketEvent(
+                saved.getId(),
+                "TicketCreated",
+                saved.getTitle(),
+                saved.getStatus().name(),
+                saved.getTechnicianId()
+        );
+
+        rabbitTemplate.convertAndSend(
+                TicketAMQPConfiguration.EXCHANGE,
+                TicketAMQPConfiguration.RK_CREATED,
+                event
+        );
 
         return TicketMapper.toResponse(saved);
     }

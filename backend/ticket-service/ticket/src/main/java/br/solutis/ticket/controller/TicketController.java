@@ -3,12 +3,9 @@ package br.solutis.ticket.controller;
 import br.solutis.ticket.dto.request.AtribuirTecnicoRequest;
 import br.solutis.ticket.dto.request.TicketRequest;
 import br.solutis.ticket.dto.response.TicketResponse;
-import br.solutis.ticket.entity.Ticket;
 import br.solutis.ticket.enums.Category;
 import br.solutis.ticket.enums.TicketPriority;
 import br.solutis.ticket.enums.Status;
-import br.solutis.ticket.mapper.TicketMapper;
-import br.solutis.ticket.repository.TicketRepository;
 import br.solutis.ticket.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -79,10 +76,7 @@ public class TicketController {
 
     @Operation(summary = "Alterar prioridade, categoria, descrição e status de um ticket pelo ID")
     @PutMapping("/{id}")
-    public ResponseEntity<TicketResponse> atualizaTicket(
-            @Valid @PathVariable UUID id,
-            @RequestBody TicketRequest request
-    ) {
+    public ResponseEntity<TicketResponse> atualizaTicket(@Valid @PathVariable UUID id,@RequestBody TicketRequest request){
         TicketResponse response = ticketService.atualizaTicket(id, request);
         return ResponseEntity.ok(response);
     }
@@ -96,7 +90,6 @@ public class TicketController {
         TicketResponse response = ticketService.atribuirTecnico(id, request);
         return ResponseEntity.ok(response);
     }
-
 
     @Operation(summary = "Encerrar ticket")
     @DeleteMapping("/{id}/close")
