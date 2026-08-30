@@ -1,7 +1,9 @@
 package br.solutis.ticket.service;
 
 import br.solutis.ticket.amqp.TicketAMQPConfiguration;
+import br.solutis.ticket.client.UserClient;
 import br.solutis.ticket.dto.event.TicketEvent;
+import br.solutis.ticket.dto.externo.UserDTO;
 import br.solutis.ticket.dto.request.AtribuirTecnicoRequest;
 import br.solutis.ticket.dto.request.TicketRequest;
 import br.solutis.ticket.dto.response.TicketResponse;
@@ -27,10 +29,12 @@ public class TicketService {
     @Autowired
     private TicketRepository ticketRepository;
     private RabbitTemplate rabbitTemplate;
+    private final UserClient userClient;
 
-    public TicketService(TicketRepository ticketRepository, RabbitTemplate rabbitTemplate) {
+    public TicketService(TicketRepository ticketRepository, RabbitTemplate rabbitTemplate, UserClient userClient) {
         this.ticketRepository = ticketRepository;
         this.rabbitTemplate = rabbitTemplate;
+        this.userClient = userClient;
     }
 
     // Metodo para substituir bloco anterior de montagem de eventos e enviar para message broker (RabbitMQ)
@@ -47,6 +51,13 @@ public class TicketService {
 
     @Transactional
     public TicketResponse criaTicket(TicketRequest request) {
+
+        // Validacao de ser solicitante como cliente registrado em banco de dados EXTERNO do serviço de usuarios usando algortimo explicito do 'loadBalanced'
+        // anotacao do "RestClient" construido com DTO por conflito de uso do loadBalanced pelo servico do Eureka (Discovery)
+        UserDTO cliente = userClient.buscaPorId(request.customerId()).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "ID de Cliente não encontrado: " + request.customerId())
+        );
+
         Ticket ticket = TicketMapper.toEntity(request);
         ticket.setStatus(Status.OPEN);
 
@@ -128,6 +139,15 @@ public class TicketService {
     public TicketResponse atribuirTecnico(UUID id, AtribuirTecnicoRequest request) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket não encontrado"));
+
+        // Validacao de ser tecnico registrado em banco de dados EXTERNO do serviço de usuarios usando algortimo explicito do 'loadBalanced'
+        // anotacao do "RestClient" construido com DTO por conflito de uso do loadBalanced pelo servico do Eureka (Discovery)
+        UserDTO tecnico = userClient.buscaPorId(request.technicianId()).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "ID do Tecnico: " + request.technicianId() + " não encontrado"));
+
+        if (!"TECHNICIAN".equals(tecnico.role())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O usuario: "+ request.technicianId() + " informado não é tecnico");
+        }
 
         ticket.setTechnicianId(request.technicianId());
         ticket.setStatus(Status.IN_PROGRESS); // Correcao, usando ENUM direto
