@@ -33,6 +33,18 @@ public class TicketService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
+    // Metodo para substituir bloco anterior de montagem de eventos e enviar para message broker (RabbitMQ)
+    private void publicarEvento(Ticket ticket, String eventType, String routingKey){
+        TicketEvent event = new TicketEvent(
+                ticket.getId(),
+                eventType,
+                ticket.getTitle(),
+                ticket.getStatus().name(),
+                ticket.getTechnicianId()
+        );
+        rabbitTemplate.convertAndSend(TicketAMQPConfiguration.EXCHANGE, routingKey, event);
+    }
+
     @Transactional
     public TicketResponse criaTicket(TicketRequest request) {
         Ticket ticket = TicketMapper.toEntity(request);
@@ -40,19 +52,7 @@ public class TicketService {
 
         Ticket saved = ticketRepository.save(ticket);
 
-        TicketEvent event = new TicketEvent(
-                saved.getId(),
-                "TicketCreated",
-                saved.getTitle(),
-                saved.getStatus().name(),
-                saved.getTechnicianId()
-        );
-
-        rabbitTemplate.convertAndSend(
-                TicketAMQPConfiguration.EXCHANGE,
-                TicketAMQPConfiguration.RK_CREATED,
-                event
-        );
+        publicarEvento(saved, "TicketCreated", TicketAMQPConfiguration.RK_CREATED);
 
         return TicketMapper.toResponse(saved);
     }
@@ -109,6 +109,8 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket não encontrado"));
 
+        Status statusAntigo = ticket.getStatus(); //captaçao antes (auxiliar)
+
         ticket.setDescription(request.description());
         ticket.setPriority(request.priority());
         ticket.setCategory(request.category());
@@ -116,8 +118,9 @@ public class TicketService {
 
         Ticket saved = ticketRepository.save(ticket);
 
-        // rabbitTemplate.convertAndSend("ticket.updated", saved);
-
+        if (saved.getStatus() != statusAntigo){ // Se status de antes da atualizacao diferente de pos-atualizacao...
+            publicarEvento(saved, "TicketStatusChanged", TicketAMQPConfiguration.RK_STATUS_CHANGED);
+        }
         return TicketMapper.toResponse(saved);
     }
 
@@ -127,11 +130,11 @@ public class TicketService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket não encontrado"));
 
         ticket.setTechnicianId(request.technicianId());
-        ticket.setStatus(Status.valueOf("IN_PROGRESS"));
+        ticket.setStatus(Status.IN_PROGRESS); // Correcao, usando ENUM direto
 
         Ticket saved = ticketRepository.save(ticket);
 
-        // rabbitTemplate.convertAndSend("ticket.assigned", saved);
+        publicarEvento(saved, "TicketAssigned", TicketAMQPConfiguration.RK_ASSIGNED);
 
         return TicketMapper.toResponse(saved);
     }
@@ -141,11 +144,11 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket não encontrado"));
 
-        ticket.setStatus(Status.valueOf("CLOSED"));
+        ticket.setStatus(Status.CLOSED); // Correcao, usando ENUM direto
 
         Ticket saved = ticketRepository.save(ticket);
 
-        // rabbitTemplate.convertAndSend("ticket.closed", saved);
+        publicarEvento(saved, "TicketStatusChanged", TicketAMQPConfiguration.RK_STATUS_CHANGED);
 
         return TicketMapper.toResponse(saved);
     }

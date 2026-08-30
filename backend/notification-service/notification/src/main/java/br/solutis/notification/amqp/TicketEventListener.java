@@ -29,7 +29,7 @@ public class TicketEventListener {
         return switch (e.eventType()){
             case "TicketCreated" -> "Chamado '" + e.title() + "' criado (status " + e.status() + ").";
             case "TicketAssigned" -> "Chamado '" + e.title() + "' atribuido ao tecnico " + e.technicianId() + ".";
-            case "TicketStatusChanged" -> "Chamado '" + e.title() + "' mudou para status " + e.status() + ").";
+            case "TicketStatusChanged" -> "Chamado '" + e.title() + "' mudou para status " + e.status() + ".";
             default -> "Evento " + e.eventType() + " no chamado '" + e.title() + "'.";
         };
     };
