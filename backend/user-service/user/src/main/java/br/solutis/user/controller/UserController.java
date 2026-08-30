@@ -3,7 +3,6 @@ package br.solutis.user.controller;
 import br.solutis.user.dto.request.UpdateUserRequest;
 import br.solutis.user.dto.request.UserRequest;
 import br.solutis.user.dto.response.UserResponse;
-import br.solutis.user.repository.UserRepository;
 import br.solutis.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -18,9 +17,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
