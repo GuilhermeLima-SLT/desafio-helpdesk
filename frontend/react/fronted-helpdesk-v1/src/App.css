@@ -18,7 +18,7 @@
 .tabela { width: 100%; border-collapse: collapse; background: #fff; }
 .tabela th, .tabela td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid #e5e7eb; }
 .tabela th { background: #f1f5f9; font-size: 0.8rem; text-transform: uppercase; color: #475569; }
-.tabela a { color: #2563eb; text-decoration: none; }
+.tabela a { color: #0878bd; text-decoration: none; }
 .erro { color: #b91c1c; }
 
 .filtros { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
@@ -34,10 +34,10 @@
 }
 .formulario textarea { min-height: 90px; resize: vertical; }
 .acoes { display: flex; gap: 0.75rem; }
-button { padding: 0.55rem 1rem; border: none; border-radius: 6px; background: #2563eb; color: #fff; cursor: pointer; }
+button { padding: 0.55rem 1rem; border: none; border-radius: 6px; background: #0878bd; color: #fff; cursor: pointer; }
 button[type="button"] { background: #e2e8f0; color: #1f2937; }
 button:disabled { opacity: 0.6; cursor: default; }
-.btn { display: inline-block; margin-bottom: 1rem; padding: 0.5rem 0.9rem; background: #2563eb; color: #fff; border-radius: 6px; text-decoration: none; font-size: 0.9rem; }
+.btn { display: inline-block; margin-bottom: 1rem; padding: 0.5rem 0.9rem; background: #0878bd; color: #fff; border-radius: 6px; text-decoration: none; font-size: 0.9rem; }
 
 .detalhes { display: grid; grid-template-columns: 160px 1fr; gap: 0.5rem 1rem; margin-top: 1rem; }
 .detalhes dt { font-weight: 600; color: #475569; }
@@ -48,3 +48,10 @@ button:disabled { opacity: 0.6; cursor: default; }
 .acao h3 { margin: 0; font-size: 0.95rem; }
 .acao label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; font-weight: 600; color: #475569; }
 .acao select { padding: 0.45rem; border: 1px solid #cbd5e1; border-radius: 6px; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.card { display: flex; flex-direction: column; gap: 0.3rem; padding: 1.25rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; }
+.card-valor { font-size: 2rem; font-weight: 700; color: #1e293b; }
+.card-rotulo { font-size: 0.85rem; color: #64748b; }
+.card-critico { border-color: #fca5a5; }
+.card-critico .card-valor { color: #dc2626; }
