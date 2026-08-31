@@ -42,3 +42,9 @@ button:disabled { opacity: 0.6; cursor: default; }
 .detalhes { display: grid; grid-template-columns: 160px 1fr; gap: 0.5rem 1rem; margin-top: 1rem; }
 .detalhes dt { font-weight: 600; color: #475569; }
 .detalhes dd { margin: 0; }
+
+.acoes-painel { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.5rem; }
+.acao { display: flex; flex-direction: column; gap: 0.6rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; min-width: 240px; }
+.acao h3 { margin: 0; font-size: 0.95rem; }
+.acao label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; font-weight: 600; color: #475569; }
+.acao select { padding: 0.45rem; border: 1px solid #cbd5e1; border-radius: 6px; }
