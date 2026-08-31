@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record TicketResponse(
@@ -40,6 +41,10 @@ public record TicketResponse(
         UUID customerId,
 
         @Column(name = "technician_id")
-        UUID technicianId
+        UUID technicianId,
+
+        LocalDateTime createdAt,
+
+        LocalDateTime updatedAt
 ) {
 }

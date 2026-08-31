@@ -25,7 +25,9 @@ public class TicketMapper {
                 t.getPriority(),
                 t.getCategory(),
                 t.getCustomerId(),
-                t.getTechnicianId()
+                t.getTechnicianId(),
+                t.getCreatedAt(),
+                t.getUpdatedAt()
         );
     }
 }
