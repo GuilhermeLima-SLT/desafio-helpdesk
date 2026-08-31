@@ -69,10 +69,10 @@ public class TicketService {
     }
 
     @Transactional(readOnly = true)
-    public List<TicketRequest> findAll() {
+    public List<TicketResponse> findAll() {
         return ticketRepository.findAll()
                 .stream()
-                .map(TicketRequest::new)
+                .map(TicketMapper::toResponse)
                 .toList();
     }
 

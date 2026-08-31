@@ -33,9 +33,8 @@ public class TicketController {
 
     @Operation(summary = "Listar todos tickets")
     @GetMapping
-    public ResponseEntity<List<TicketRequest>> findAll() {
-        List<TicketRequest> list = ticketService.findAll();
-        return ResponseEntity.ok(list);
+    public ResponseEntity<List<TicketResponse>> findAll() {
+        return ResponseEntity.ok(ticketService.findAll());
     }
 
     @Operation(summary = "Filtro de tickets por status especifico")
