@@ -38,3 +38,7 @@ button { padding: 0.55rem 1rem; border: none; border-radius: 6px; background: #2
 button[type="button"] { background: #e2e8f0; color: #1f2937; }
 button:disabled { opacity: 0.6; cursor: default; }
 .btn { display: inline-block; margin-bottom: 1rem; padding: 0.5rem 0.9rem; background: #2563eb; color: #fff; border-radius: 6px; text-decoration: none; font-size: 0.9rem; }
+
+.detalhes { display: grid; grid-template-columns: 160px 1fr; gap: 0.5rem 1rem; margin-top: 1rem; }
+.detalhes dt { font-weight: 600; color: #475569; }
+.detalhes dd { margin: 0; }

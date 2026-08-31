@@ -7,3 +7,7 @@ export function listarChamados() {
 export function criarChamado(dados) {
   return http.post("/api/tickets", dados).then((res) => res.data);
 }
+
+export function buscarChamado(id) {
+  return http.get(`/api/tickets/${id}`).then((res) => res.data);
+}
