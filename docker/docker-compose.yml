@@ -13,7 +13,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_user_data:/var/lib/postgresql/dados
+      - postgres_user_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d user_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   postgres-ticket:
     image: postgres:15-alpine
@@ -24,7 +29,12 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - postgres_ticket_data:/var/lib/postgresql/dados
+      - postgres_ticket_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ticket -d ticket_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   rabbitmq:
     image: rabbitmq:4-management-alpine
@@ -34,6 +44,12 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 
   postgres-notification:
     image: postgres:15-alpine
@@ -44,4 +60,96 @@ services:
     ports:
       - "5435:5432"
     volumes:
-      - postgres_notification_data:/var/lib/postgresql/dados
+      - postgres_notification_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notification -d notification_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+# Adicionando o serviço do eureka-server para registro de serviços
+  eureka-server:
+    build: ../backend/server-service/server
+    ports:
+      - "8003:8003"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8003/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+# Adicionando serviço user-service
+  user-service:
+    build: ../backend/user-service/user
+    ports:
+      - "8001:8001"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/user_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8003/eureka
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      postgres-user:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+# Adicionando serviço ticket-service
+  ticket-service:
+    build: ../backend/ticket-service/ticket
+    ports:
+      - "8002:8002"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-ticket:5432/ticket_db
+      SPRING_DATASOURCE_USERNAME: ticket
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8003/eureka
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      postgres-ticket:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+# Adicionando serviço notification-service
+  notification-service:
+    build: ../backend/notification-service/notification
+    ports:
+      - "8006:8006"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-notification:5432/notification_db
+      SPRING_DATASOURCE_USERNAME: notification
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8003/eureka
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      postgres-notification:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+# Adicionando serviço gateway
+  gateway:
+    build: ../backend/gateway/gateway
+    ports:
+      - "8004:8004"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8003/eureka
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+# adicionando serviço frontend
+  frontend:
+    build: ../frontend/react/fronted-helpdesk-v1
+    ports:
+      - "8080:80"
+    depends_on:
+      - gateway
