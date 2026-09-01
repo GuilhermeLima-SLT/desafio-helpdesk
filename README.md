@@ -1,9 +1,8 @@
 # HelpDesk — Desafio Técnico (Arquitetura baseada em Microsserviços)
 
-#### Dashboard HelpDesk simples que faz a gestão de chamados com clientes, técnicos, categorias, prioridades e notificações automáticas.
-
-#### Criação dos chamados em interface visual feita com React JS funcionando com HTML + CSS e Javascript puro, baseados em formularios com campos validados pelo backend, conexões usando axios apontando apenas para Gateway e react-router-dom para mapeamento de endereços das requisições HTTP e "tradução" dos endereços para utilizados em frontend. 
-
+< Dashboard HelpDesk simples que faz a gestão de chamados com clientes, técnicos, categorias, prioridades e notificações automáticas.
+Criação dos chamados em interface visual feita com React JS funcionando com HTML + CSS e Javascript puro, baseados em formularios com campos validados pelo backend, conexões usando axios apontando apenas para Gateway e react-router-dom para mapeamento de endereços das requisições HTTP e "tradução" dos endereços para utilizados em frontend. 
+>
 
 ## Arquitetura
 
@@ -152,4 +151,4 @@ cd backend/ticket-service/ticket
 ./mvnw test
 ```
 
-#### Os testes automatizados cobrem as regras minimamente importantes dos endpoints principais do projeto, dentre elas, status inicial OPEN, publicação de eventos, visualização de ticket, validação de cliente/técnico (sem conexões diretas como solicitado) e códigos de erro 400/404.
+< Os testes automatizados cobrem as regras minimamente importantes dos endpoints principais do projeto, dentre elas, status inicial OPEN, publicação de eventos, visualização de ticket, validação de cliente/técnico (sem conexões diretas como solicitado) e códigos de erro 400/404.>
