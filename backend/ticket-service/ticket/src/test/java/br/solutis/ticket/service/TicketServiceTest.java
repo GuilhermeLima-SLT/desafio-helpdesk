@@ -71,11 +71,11 @@ public class TicketServiceTest {
 
         // Assert
         assertThat(resposta.title()).isEqualTo("PC não liga");
-        assertThat(resposta.status()).isEqualTo(Status.OPEN);          // status inicial 'OPEN'
-        verify(ticketRepository).save(any(Ticket.class));               // salva
-        verify(rabbitTemplate).convertAndSend(                          // publica o evento certo
-                eq(TicketAMQPConfiguration.EXCHANGE),
-                eq(TicketAMQPConfiguration.RK_CREATED),
+        assertThat(resposta.status()).isEqualTo(Status.OPEN);           // Set de status inicial como 'OPEN'
+        verify(ticketRepository).save(any(Ticket.class));         // salva ticket
+        verify(rabbitTemplate).convertAndSend(                         // publica o evento certo
+        eq(TicketAMQPConfiguration.EXCHANGE),                          // exchange ticket.event
+                eq(TicketAMQPConfiguration.RK_CREATED),                // 'routing key' ticket.event.created
                 any(TicketEvent.class));
     }
 
@@ -86,7 +86,7 @@ public class TicketServiceTest {
         TicketRequest request = new TicketRequest(
                 "PC não liga", "Não dá vídeo", TicketPriority.HIGH, null, Category.HARDWARE, clienteId);
 
-        when(userClient.buscaPorId(clienteId)).thenReturn(Optional.empty()); // user-service diz: não existe
+        when(userClient.buscaPorId(clienteId)).thenReturn(Optional.empty()); // user-service diz  "não existe"
 
         ResponseStatusException erro = assertThrows(ResponseStatusException.class,
                 () -> ticketService.criaTicket(request));
