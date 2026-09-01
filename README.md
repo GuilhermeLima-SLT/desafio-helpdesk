@@ -109,7 +109,7 @@ E alguns outros endpoints criados para filtrar também por meio de requisições
 | GET | `/api/tickets/category/{category}` | Listar tickets por categoria |
 | GET | `/api/tickets/customer/{customerId}` | Listar tickets de um determinado cliente |
 | DELETE | `/api/tickets/{id}/close` | Encerrar ticket (Exclusao logica) |
-| DELETE | `/api/tickets` | Deletar chamado (Delete no banco de dados também) |
+| DELETE | `/api/tickets/{id}` | Deletar chamado (Delete no banco de dados também) |
 
 ## Mensageria (Eventos)
 
