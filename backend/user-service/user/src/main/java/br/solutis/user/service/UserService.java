@@ -23,9 +23,13 @@ public class UserService {
     private UserRepository userRepository;
 
     @Transactional
-    public UserResponse createUser(@Valid UserRequest response) {
-        User user = UserMapper.toEntity(response);
-        user.setActive(true); // Garante que nasce ativo, caso não venha no mapper
+    public UserResponse createUser(@Valid UserRequest request) {
+        if (userRepository.existsByEmail(request.email())){
+
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuario com o e-mail: " + request.email());
+        }
+        User user = UserMapper.toEntity(request);
+        user.setActive(true);
         User saved = userRepository.save(user);
         return UserMapper.toResponse(saved);
     }
@@ -57,6 +61,10 @@ public class UserService {
     public UserResponse updateUser(@Valid UUID id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        if(!user.getEmail().equals(request.email()) && userRepository.existsByEmail(request.email())){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuario com o e-mail: " + request.email());
+        }
 
         user.setName(request.name());
         user.setEmail(request.email());
