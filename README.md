@@ -1,8 +1,10 @@
 # HelpDesk — Desafio Técnico (Arquitetura baseada em Microsserviços)
 
-< Dashboard HelpDesk simples que faz a gestão de chamados com clientes, técnicos, categorias, prioridades e notificações automáticas.
-Criação dos chamados em interface visual feita com React JS funcionando com HTML + CSS e Javascript puro, baseados em formularios com campos validados pelo backend, conexões usando axios apontando apenas para Gateway e react-router-dom para mapeamento de endereços das requisições HTTP e "tradução" dos endereços para utilizados em frontend. 
->
+## Descrição do sistema
+
+#### Dashboard HelpDesk simples que faz a gestão de chamados com clientes, técnicos, categorias, prioridades e notificações automáticas.
+
+#### Criação dos chamados em interface visual feita com React JS funcionando com HTML + CSS e Javascript puro, baseados em formularios com campos validados pelo backend, conexões usando axios apontando apenas para Gateway e react-router-dom para mapeamento de endereços das requisições HTTP e "tradução" dos endereços para utilizados em frontend. 
 
 ## Arquitetura
 
@@ -21,7 +23,7 @@ user-service (8001) | ticket-service (8002) | notification-service (8006)
 Service Discovery: Eureka Server (8003)
 ```
 
-## Stack
+## Stack (Tecnologias)
 
 - Java 21, Spring Boot 4.1.1 (Web, Data JPA, Validation, AMQP)
 - Spring Cloud Gateway + Netflix Eureka (service discovery)
@@ -77,16 +79,6 @@ Criados automaticamente via Flyway (`V3__mock_users_models.sql`):
 | Marcia Técnica | marcia.technician@solutis.com.br | TECHNICIAN |
 | Paulo Administrador | paulo.admin@solutis.com.br | ADMIN |
 
-## Roteiro de verificação
-
-1. Abra http://localhost:8080 → **Dashboard** com os contadores simples solicitados.
-2. **Chamados → + Novo chamado**: preencha e selecione um cliente. O chamado é
-   criado com status `OPEN` e o evento `TicketCreated` é publicado no RabbitMQ.
-3. Abra os **Detalhes** do chamado → altere status/prioridade e **atribua um técnico**
-   (eventos `TicketStatusChanged` e `TicketAssigned`).
-4. Confirme as notificações geradas:
-   `curl http://localhost:8004/api/notifications`
-5. (Opcional) Veja as filas e mensagens no RabbitMQ http://localhost:15672.
 
 ## Principais endpoints (API REST - via Gateway)
 
@@ -119,7 +111,7 @@ E alguns outros endpoints criados para filtrar também por meio de requisições
 | DELETE | `/api/tickets/{id}/close` | Encerrar ticket (Exclusao logica) |
 | DELETE | `/api/tickets` | Deletar chamado (Delete no banco de dados também) |
 
-## Mensageria
+## Mensageria (Eventos)
 
 Exchange `ticket.events` (do tipo *topic*), consumida pela fila `notification.tickets`
 (binding `ticket.#`):
@@ -129,6 +121,17 @@ Exchange `ticket.events` (do tipo *topic*), consumida pela fila `notification.ti
 | TicketCreated | `ticket.created` | criação de chamado |
 | TicketAssigned | `ticket.assigned` | atribuição de técnico |
 | TicketStatusChanged | `ticket.status-changed` | alteração de status / encerramento |
+
+## Roteiro de verificação
+
+1. Abra http://localhost:8080 → **Dashboard** com os contadores simples solicitados.
+2. **Chamados → + Novo chamado**: preencha e selecione um cliente. O chamado é
+   criado com status `OPEN` e o evento `TicketCreated` é publicado no RabbitMQ.
+3. Abra os **Detalhes** do chamado → altere status/prioridade e **atribua um técnico**
+   (eventos `TicketStatusChanged` e `TicketAssigned`).
+4. Confirme as notificações geradas:
+   `curl http://localhost:8004/api/notifications`
+5. (Opcional) Veja as filas e mensagens no RabbitMQ http://localhost:15672.
 
 ## Configuração por variáveis de ambiente
 
@@ -151,4 +154,4 @@ cd backend/ticket-service/ticket
 ./mvnw test
 ```
 
-< Os testes automatizados cobrem as regras minimamente importantes dos endpoints principais do projeto, dentre elas, status inicial OPEN, publicação de eventos, visualização de ticket, validação de cliente/técnico (sem conexões diretas como solicitado) e códigos de erro 400/404.>
+#### Os testes automatizados cobrem as regras minimamente importantes dos endpoints principais do projeto, dentre elas, status inicial OPEN, publicação de eventos, visualização de ticket, validação de cliente/técnico (sem conexões diretas como solicitado) e códigos de erro 400/404.
