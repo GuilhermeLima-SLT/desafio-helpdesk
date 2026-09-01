@@ -1,8 +1,7 @@
 # HelpDesk — Desafio Técnico (Arquitetura baseada em Microsserviços)
 
 < Dashboard HelpDesk simples que faz a gestão de chamados com clientes, técnicos, categorias, prioridades e notificações automáticas.
-Criação dos chamados em interface visual feita com React JS funcionando com HTML + CSS e Javascript puro, baseados em formularios com campos validados pelo backend, conexões usando axios apontando apenas para Gateway e react-router-dom para mapeamento de endereços das requisições HTTP e "tradução" dos endereços para utilizados em frontend. 
->
+Criação dos chamados em interface visual feita com React JS funcionando com HTML + CSS e Javascript puro, baseados em formularios com campos validados pelo backend, conexões usando axios apontando apenas para Gateway e react-router-dom para mapeamento de endereços das requisições HTTP e "tradução" dos endereços para utilizados em frontend. >
 
 ## Arquitetura
 
