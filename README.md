@@ -1,8 +1,9 @@
 # HelpDesk — Desafio Técnico (Arquitetura baseada em Microsserviços)
 
-< Dashboard HelpDesk simples que faz a gestão de chamados com clientes, técnicos, categorias, prioridades e notificações automáticas.
-Criação dos chamados em interface visual feita com React JS funcionando com HTML + CSS e Javascript puro, baseados em formularios com campos validados pelo backend, conexões usando axios apontando apenas para Gateway e react-router-dom para mapeamento de endereços das requisições HTTP e "tradução" dos endereços para utilizados em frontend. 
->
+#### Dashboard HelpDesk simples que faz a gestão de chamados com clientes, técnicos, categorias, prioridades e notificações automáticas.
+
+#### Criação dos chamados em interface visual feita com React JS funcionando com HTML + CSS e Javascript puro, baseados em formularios com campos validados pelo backend, conexões usando axios apontando apenas para Gateway e react-router-dom para mapeamento de endereços das requisições HTTP e "tradução" dos endereços para utilizados em frontend. 
+
 
 ## Arquitetura
 
@@ -91,35 +92,37 @@ Criados automaticamente via Flyway (`V3__mock_users_models.sql`):
 ## Principais endpoints (API REST - via Gateway)
 
 | Método | Rota | Descrição |
-|------------------------------------------------------------------|
+|---|---|---|
+| USER |
 | POST | `/api/users` | criar usuário |
 | GET | `/api/users` | listar usuários ativos |
 | GET | `/api/users/{id}` | consultar usuário |
 | PUT | `/api/users/{id}` | atualizar usuário |
 | PATCH | `/api/users/{id}/deactivate` | inativar usuário |
-|------------------------------------------------------------------|
+| TICKET |
 | POST | `/api/tickets` | criar chamado |
 | GET | `/api/tickets` | listar chamados |
 | GET | `/api/tickets/{id}` | consultar chamado |
 | PUT | `/api/tickets/{id}` | alterar descrição, prioridade, categoria e status |
 | PUT | `/api/tickets/{id}/assign` | atribuir técnico |
-|------------------------------------------------------------------|
+|NOTIFICATION|
 | GET | `/api/notifications` | listar notificações |
 | GET | `/api/notifications/{id}` | consultar notificação |
 
-<
+
 E alguns outros endpoints criados para filtrar também por meio de requisições HTTP:
+| Método | Rota | Descrição |
+|---|---|---|
 | GET | `/api/tickets/status/{status}` | Listar tickets por status |
 | GET | `/api/tickets/priority/{priority}` | Listar tickets por prioridade |
 | GET | `/api/tickets/category/{category}` | Listar tickets por categoria |
 | GET | `/api/tickets/customer/{customerId}` | Listar tickets de um determinado cliente |
 | DELETE | `/api/tickets/{id}/close` | Encerrar ticket (Exclusao logica) |
 | DELETE | `/api/tickets` | Deletar chamado (Delete no banco de dados também) |
->
 
 ## Mensageria
 
-Exchange `ticket.events` (tipo *topic*), consumida pela fila `notification.tickets`
+Exchange `ticket.events` (do tipo *topic*), consumida pela fila `notification.tickets`
 (binding `ticket.#`):
 
 | Evento | Routing key | Quando ocorre |
@@ -149,4 +152,4 @@ cd backend/ticket-service/ticket
 ./mvnw test
 ```
 
-< Os testes automatizados cobrem as regras minimamente importantes dos endpoints principais do projeto, dentre elas, status inicial OPEN, publicação de eventos, visualização de ticket, validação de cliente/técnico (sem conexões diretas como solicitado) e códigos de erro 400/404.>
+#### Os testes automatizados cobrem as regras minimamente importantes dos endpoints principais do projeto, dentre elas, status inicial OPEN, publicação de eventos, visualização de ticket, validação de cliente/técnico (sem conexões diretas como solicitado) e códigos de erro 400/404.
