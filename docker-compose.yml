@@ -69,7 +69,7 @@ services:
 
 # Adicionando o serviço do eureka-server para registro de serviços
   eureka-server:
-    build: ../backend/server-service/server
+    build: ./backend/server-service/server
     ports:
       - "8003:8003"
     healthcheck:
@@ -80,7 +80,7 @@ services:
 
 # Adicionando serviço user-service
   user-service:
-    build: ../backend/user-service/user
+    build: ./backend/user-service/user
     ports:
       - "8001:8001"
     environment:
@@ -99,7 +99,7 @@ services:
 
 # Adicionando serviço ticket-service
   ticket-service:
-    build: ../backend/ticket-service/ticket
+    build: ./backend/ticket-service/ticket
     ports:
       - "8002:8002"
     environment:
@@ -118,7 +118,7 @@ services:
 
 # Adicionando serviço notification-service
   notification-service:
-    build: ../backend/notification-service/notification
+    build: ./backend/notification-service/notification
     ports:
       - "8006:8006"
     environment:
@@ -137,7 +137,7 @@ services:
 
 # Adicionando serviço gateway
   gateway:
-    build: ../backend/gateway/gateway
+    build: ./backend/gateway/gateway
     ports:
       - "8004:8004"
     environment:
@@ -148,7 +148,7 @@ services:
 
 # adicionando serviço frontend
   frontend:
-    build: ../frontend/react/fronted-helpdesk-v1
+    build: ./frontend/react/fronted-helpdesk-v1
     ports:
       - "8080:80"
     depends_on:
